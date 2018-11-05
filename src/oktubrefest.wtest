@@ -1,0 +1,38 @@
+import persona.*
+
+describe "comienza la fiesta"{
+	
+const persona1 = new Belga
+( peso= 80, jarrasCompradas = [], leGustaLaMusica = true ,marcaFavorita = "alemania",aguante = 100)	
+
+const marca1 = new Corona(lupulo=4, pais="alemana", graduacion = 10 )
+const marca2 = new Guiness(lupulo=5, pais="checo", graduacion = 20 )
+const marca3 = new Hofbrau(lupulo=4, pais="belga", graduacion = 8 )
+
+const carpa10 = new Carpa(limiteDePersonas =10,ambientacionConMusicas = true,marcaQueVende = marca2,personasDentro = [])
+
+
+	test "hora de degustar"{
+		
+		assert.equals(false,persona1.dentroDeUnaCarpa(carpa10))
+		assert.equals(0,carpa10.genteEnLaCarpa())
+		
+		persona1.comprarCerveza(carpa10,2)
+		
+		assert.equals(1,persona1.cantidadCompradas())
+		assert.equals(20.4,persona1.alcoholIngirido() // 10,2 de alcohol x 2 litros
+		)
+		assert.equals(true,persona1.estaEbria()) //20,4 x 80 = 1632 > 100
+		
+		assert.equals(1,carpa10.genteEnLaCarpa())
+		assert.equals(true,persona1.esMuytomador())
+		
+		assert.equals(1,carpa10.ebrioEnpedernidos())
+		
+		assert.equals(false,persona1.tomadorPatriota())
+		
+	}
+}
+
+
+
