@@ -5,7 +5,7 @@ class Persona{
 	const peso = 0
 	var property jarrasCompradas = []
 	const leGustaLaMusica = null
-	var property marcaFavorita = null
+	const marcaFavorita = null // "Corona" "Hofbrau" "Guiness"
 	const aguante = 0
 	
 	method nacionalidad() ="otros"
@@ -19,7 +19,7 @@ class Persona{
 		else 0
 		}
 	
-	method leGusta(carpa) = leGustaLaMusica == carpa.musicaEnLaCarpa() and marcaFavorita == carpa.marcaQueVende()
+	method leGusta(carpa) = leGustaLaMusica == carpa.musicaEnLaCarpa() and marcaFavorita == carpa.marcaDeLaCerveza()
 	
 	method dentroDeUnaCarpa(carpa) = carpa.personasDentro().contains(self)
 	
@@ -29,7 +29,7 @@ class Persona{
 	
 	method cantidadCompradas() = jarrasCompradas.size()
 	
-	method esMuytomador() = jarrasCompradas.all{jarra => jarra.litros() >= 1}
+	method esMuytomador() = self.estaEbria() and jarrasCompradas.all{jarra => jarra.litros() >= 1}
 	
 	method tomadorPatriota() = jarrasCompradas.all{jarra => jarra.marcaDeOrigen() == self.nacionalidad()}
 	
@@ -39,7 +39,7 @@ class Aleman inherits Persona {
 	
 	override method nacionalidad() ="Alemania"
 	
-	override method leGusta(carpa) = carpa.genteEnLaCarpa() < carpa.limite() and leGustaLaMusica ==carpa.musicaEnLaCarpa()
+	override method leGusta(carpa) = carpa.genteEnLaCarpa() < 2 and leGustaLaMusica ==carpa.musicaEnLaCarpa()
 	
 }
 
@@ -63,14 +63,12 @@ class Carpa{
 	
 	const limiteDePersonas = 0
 	const ambientacionConMusicas = null // bool
-	var property marcaQueVende = null
+	const cervezaQueVende = null // 
 	var property personasDentro = []
 	
 	method genteEnLaCarpa() = personasDentro.size()
 	
 	method personasDentro() = personasDentro
-	
-	method marcaQueVende() = marcaQueVende
 	
 	method musicaEnLaCarpa() = ambientacionConMusicas
 	
@@ -82,36 +80,41 @@ class Carpa{
 			 }
 	}						  
 	
-	method darJarraDeCerveza(litrosDeseados) = new Jarra(litros=litrosDeseados, marca=marcaQueVende) //_______________!
+	method darJarraDeCerveza(litrosDeseados) = new Jarra(litros=litrosDeseados, cerveza=cervezaQueVende) //_______________!
 	
 	method limite() = limiteDePersonas
 	
-	method infoDeLupulo() = marcaQueVende.lupulo()
+	method infoDeLupulo() = cervezaQueVende.lupulo()
 	
-	method infoDeGraduacion() = marcaQueVende.graducion()
+	method infoDeGraduacion() = cervezaQueVende.graducion()
 	
-	method ebrioEnpedernidos() = personasDentro.map{persona => persona.esMuytomador()}.size()
+	method marcaDeLaCerveza() = cervezaQueVende.marcaDeOrigen()
+	
+	method ebrioEnpedernidos() = personasDentro.count{persona => persona.esMuytomador()}
 	
 }
 
 class Jarra{
 	
 	var property litros = 0
-	const marca = null
+	const cerveza = null // 
 	
-	method marcaDeOrigen() = marca
+	method marcaDeOrigen() = cerveza
 	
 	method litroEnLaJarra() = litros
 	
-	method contenidoAlcolico() = litros * marca.graduacion() //_____________!
+	method contenidoAlcolico() = litros * cerveza.graduacion() //_____________!
 	 
 }
 
-class Marca{
+class Cerveza{ // Marca
 	
 	const lupulo = 0
 	var property pais = null // "alemania" "belgica" "checo"
 	var property graduacion = 0
+	const marca = null // "Corona" "Hofbrau" "Guiness"
+	
+	method marcaDeOrigen() = marca
 	
 	method lupulo() = lupulo
 	
@@ -119,19 +122,19 @@ class Marca{
 	
 }
 
-class Corona inherits Marca{
+class Rubia inherits Cerveza{
 		
 	method graduacion() = (graduacion / 100)
 	
 }
 
-class Guiness inherits Marca{
+class Negra inherits Cerveza{
 	
-	method graduacion() = graduacionReglamentaria.graduacionMundial() + lupulo * 2
+	method graduacion() = graduacionReglamentaria.graduacionMundial().min(lupulo * 2)
 	
 }
 
-class Hofbrau inherits Guiness{
+class Roja inherits Negra{
 	
 	override method graduacion() = super() * 1.25
 	
